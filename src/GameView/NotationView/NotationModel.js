@@ -1,7 +1,6 @@
-import * as Constants from "../Constants"
+import * as Constants from "../../models/Constants"
 import React from 'react'
 import './Notation.scss'
-import SublineMove from "../../GameView/MoveList/SublineMove";
 
 class NotationMove {
     constructor(san, position, onMoveClicked, currentPosition) {

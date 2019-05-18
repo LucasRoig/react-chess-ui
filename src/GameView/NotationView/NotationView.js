@@ -1,7 +1,7 @@
 import React from "react";
 import {Component} from "react";
-import { NotationModel } from "../../models/NotationModel/NotationModel";
-import "../../models/NotationModel/Notation.scss"
+import { NotationModel } from "./NotationModel";
+import "./Notation.scss"
 
 export default class NotationView extends Component {
 

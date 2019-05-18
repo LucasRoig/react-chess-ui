@@ -1,0 +1,128 @@
+.index{
+    flex: 0 0 13%;
+
+}
+
+.move{
+    flex: 0 0 43.5%;
+}
+
+.notation{
+    display: flex;
+    flex-flow: row wrap;
+    padding: 0;
+}
+
+.main-line-move{
+    flex: 0 0 43.5%;
+    padding: 0px !important;
+
+    margin-bottom: 0 !important;
+}
+.notation>.move-number{
+    flex: 0 0 13%;
+    text-align: center;
+    border-right: solid 1px #ddd;
+    color: #c0c0c0;
+    background: #f8f8f8;
+    padding: 5px;
+}
+.notation>.move-number+.move{
+    border-right: solid 1px #ddd;
+    /*max-width: 45%;*/
+}
+.notation>.move-number+.empty-move{
+    border-right: solid 1px #ddd;
+    /*max-width: 45%;*/
+}
+.move{
+    text-align: left;
+    cursor: pointer;
+    padding: 5px;
+}
+.empty-move{
+    flex: 0 0 43.5%;
+    text-align: left;
+    padding: 5px;
+}
+.move:hover{
+    background: #E6E6FA;
+}
+.move.active{
+    font-weight: bold;
+    background: #d4e8fa;
+}
+.interrupt{
+    border-top: solid 1px #ddd;
+    border-bottom: solid 1px #ddd;
+    background: #f8f8f8;
+    flex: 0 0 100%;
+    text-align: left;
+}
+
+.interrupt>.comment{
+    padding: 3px 5px;
+    display: block;
+}
+
+.sublines{
+    border-left: 2px solid #ccc;
+    text-align: left;
+}
+
+.sublines .sublines::before{
+    content: ' ';
+    border-top: 2px solid #d9d9d9;
+    position: absolute;
+    margin-left: -11px;
+    width: 9px;
+    height: 6px;
+}
+
+.subline{
+    padding-left: 7px;
+    margin: 2px 0;
+}
+.sublines .subline::before{
+    margin-top: 0.65em;
+    margin-left: -8px;
+    content: ' ';
+    border-top: 2px solid #ccc;
+    position: absolute;
+    width: 8px;
+    height: 6px;
+}
+
+.interrupt>.sublines{
+    border: none;
+}
+.subline-move{
+    padding: 0 2px;
+    cursor: pointer;
+    display: inline-block;
+}
+.subline-move:hover{
+    background: #E6E6FA;
+}
+.subline-move .move-number{
+    font-size: 90%;
+    color: #787878;
+    display: inline-block;
+}
+.subline-move.active{
+    font-weight: bold;
+    background: #d4e8fa;
+}
+
+.subline .comment{
+    display: inline;
+    color: #787878;
+    word-wrap: break-word;
+    padding: 0 5px 0 3px;
+    //vertical-align: top;
+    font-size: 90%;
+}
+
+.move-list{
+    padding:0;
+}
