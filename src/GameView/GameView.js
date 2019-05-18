@@ -41,7 +41,18 @@ export default class GameView extends Component {
     };
 
     saveComment = (e) => {
-        this.state.currentPosition.comment = e.target.value;
+        let positionStack = [this.game.startingPosition];
+        while (positionStack.length > 0){
+            let position = positionStack.pop();
+            if(position == null) continue;
+            positionStack.push(position.nextPosition);
+            position.sublines.forEach(p => positionStack.push(p));
+            if(position === this.state.currentPosition){
+                position.comment = e.target.value;
+                this.setState({currentPosition: position});
+                break;
+            }
+        }
     };
 
     setPosition = (position) => {
