@@ -42,6 +42,7 @@ export default class BookTool extends Component {
     }
 
     fetchData(){
+        console.log("fetch data from lichess")
         fetch('https://explorer.lichess.ovh/master?fen=' + this.props.currentPosition.fen)
             .then(r => r.json())
             .then(data => this.setState({ moves: data.moves }));
@@ -52,7 +53,9 @@ export default class BookTool extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        this.fetchData();
+        if(prevProps.currentPosition.fen !== this.props.currentPosition.fen){
+            this.fetchData();
+        }
     }
 }
 
