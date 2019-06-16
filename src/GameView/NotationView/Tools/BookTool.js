@@ -1,6 +1,8 @@
 import React from "react";
 import {Component} from "react";
 import "../Toolbar.scss"
+import AwesomeDebouncePromise  from "awesome-debounce-promise";
+
 
 export default class BookTool extends Component {
     state = {
@@ -41,12 +43,14 @@ export default class BookTool extends Component {
         )
     }
 
-    fetchData(){
+    _fetchData= () => {
         console.log("fetch data from lichess")
-        fetch('https://explorer.lichess.ovh/master?fen=' + this.props.currentPosition.fen)
+        fetch('https://explorer.lichess.ovh/master?fen=' + this.props.currentPosition.fen,{cache: "force-cache"})
             .then(r => r.json())
             .then(data => this.setState({ moves: data.moves }));
-    }
+    };
+
+    fetchData = AwesomeDebouncePromise(this._fetchData,500);
 
     componentDidMount() {
         this.fetchData();
