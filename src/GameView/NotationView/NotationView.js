@@ -20,7 +20,7 @@ export default class NotationView extends Component {
                     {notationModel.render()}
                     </div>
                 </div>
-                <Toolbar/>
+                <Toolbar currentPosition={this.props.currentPosition}/>
             </div>
         )
     }
