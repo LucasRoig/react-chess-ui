@@ -20,6 +20,7 @@
 .notation-wrapper{
     padding: 0;
     flex-grow: 1;
+    overflow-y: scroll;
 }
 .notation{
     display: flex;
