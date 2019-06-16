@@ -24,4 +24,11 @@ export default class NotationView extends Component {
             </div>
         )
     }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        let e = document.getElementsByClassName("move active");
+        if(e.length > 0){
+            e[0].scrollIntoView()
+        }
+    }
 }

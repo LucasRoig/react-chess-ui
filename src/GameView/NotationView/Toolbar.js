@@ -41,4 +41,11 @@ export default class Toolbar extends Component {
             })
         }
     }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        let e = document.getElementsByClassName("move active");
+        if(e.length > 0){
+            e[0].scrollIntoView()
+        }
+    }
 }
