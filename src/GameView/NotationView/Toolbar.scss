@@ -1,0 +1,93 @@
+.tool{
+  height: 300px;
+  border-bottom: 1px solid #dbdbdb;
+  flex-grow: 1;
+  overflow-y: scroll;
+
+}
+
+.notation-footer{
+  border-top: 1px solid #dbdbdb;
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-book{
+  font-size: .9em;
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-book > table > thead{
+  th{
+    font: inherit;
+    padding: 0 7px;
+    line-height: 1.9em;
+  }
+  background: #c0d6a7;
+}
+
+.tool-book td{
+    padding: 0 0 0 7px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.tool-book tr{
+  transition: background-color 150ms;
+}
+
+.tool-book tr:nth-child(even){
+  background: #f7f6f5;
+}
+.tool-book tr:hover{
+  background: #e0ebd3;
+}
+//games count
+.tool-book td:nth-child(2){
+  font-size: 0.75em;
+  text-align: right;
+}
+
+.tool-book td:first-child{
+  line-height: 30px;
+  padding-left: 7px;
+}
+
+//Score bar
+.tool-book .bar span{
+  text-align: center;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: middle;
+  border: 0 solid #d9d9d9;
+  border-width: 1px 0;
+  height: 16px;
+  line-height: 14px;
+  font-size: .75em;
+}
+.tool-book .bar span:first-child{
+  border-left-width: 1px;
+  border-radius: 3px 0 0 3px;
+}
+
+.tool-book .bar span:last-child{
+  border-right-width: 1px;
+  border-radius: 0 3px 3px 0;
+}
+
+.tool-book .bar .black{
+  background: #555;
+  color: #ddd;
+  box-shadow: 0 5px 7px rgba(255,255,255,0.2) inset;
+}
+.tool-book .bar .draws{
+  background: #a0a0a0;
+  color: #fff;
+  box-shadow: 0 5px 7px rgba(255,255,255,0.2) inset;
+}
+
+.tool-book .bar .white{
+  background: #fff;
+  box-shadow: 0 -5px 7px rgba(0,0,0,0.1) inset;
+}
