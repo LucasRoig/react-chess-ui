@@ -5,7 +5,7 @@ class ChessboardWrapper extends Component{
     board;
     style = {
         width:"550px"
-    }
+    };
     render(){
         return (
             <div id="board" style={this.style} />

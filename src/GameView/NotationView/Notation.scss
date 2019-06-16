@@ -7,10 +7,24 @@
     flex: 0 0 43.5%;
 }
 
+.game-details-panel{
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+}
+
+.game-header > p{
+    justify-content: center;
+}
+
+.notation-wrapper{
+    padding: 0;
+    flex-grow: 1;
+}
 .notation{
     display: flex;
     flex-flow: row wrap;
-    padding: 0;
+
 }
 
 .main-line-move{
