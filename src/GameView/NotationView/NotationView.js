@@ -21,7 +21,7 @@ export default class NotationView extends Component {
                     {notationModel.render()}
                     </div>
                 </div>
-                <Toolbar currentPosition={this.props.currentPosition}/>
+                <Toolbar currentPosition={this.props.currentPosition} makeMove={this.props.makeMove}/>
             </div>
         )
     }

@@ -26,7 +26,7 @@ export default class GameView extends Component {
                             <ChessboardWrapper
                                 onDragStart={this.onDragStart}
                                 onDrop={this.onDrop}
-                                onSnapEnd={this.onSnapEnd}
+                                onSnapEnd={this.makeMove}
                                 position={this.state.currentPosition.fen}/>
                         </div>
                         <button onClick={this.previousPosition}>Previous</button>
@@ -35,7 +35,7 @@ export default class GameView extends Component {
                         <button onClick={this.saveComment}>Save Comment </button>
                     </div>
                     <div className="column">
-                        <NotationView game={this.game} handleClick={this.setPosition} currentPosition={this.state.currentPosition}/>
+                        <NotationView game={this.game} handleClick={this.setPosition} currentPosition={this.state.currentPosition} makeMove={this.makeMove}/>
                         {/* <MoveList game={this.game} handleClick={this.setPosition}
                                   currentPosition={this.state.currentPosition}/> */}
                     </div>
@@ -119,7 +119,7 @@ export default class GameView extends Component {
         }
     };
 
-    onDrop = (source, target) => {
+    isMoveLegal = (source,target) => {
         // console.log('drop')
         // see if the move is legal
         this.chess.load(this.state.currentPosition.fen);
@@ -128,24 +128,31 @@ export default class GameView extends Component {
             to: target,
             promotion: 'q' // NOTE: always promote to a queen for example simplicity
         });
+        return move !== null;
         // console.log(this.game.turn())
         // illegal move
-        if (move === null) {
+    };
+
+    onDrop = (source, target) => {
+        if (!this.isMoveLegal(source,target)) {
             return 'snapback';
         }
     };
 
-    onSnapEnd = (source, target) => {
-        this.chess.load(this.state.currentPosition.fen);
-        let move = this.chess.move({
-            from: source,
-            to: target,
-            promotion: 'q' // NOTE: always promote to a queen for example simplicity
-        });
-        let pos = new Position(this.chess.fen(), move, this.state.currentPosition);
-        this.state.currentPosition.addNextPosition(pos);
-        this.setState({
-            currentPosition: pos
-        })
+    makeMove = (source, target) => {
+        //TODO optimiser un jour?
+        if(this.isMoveLegal(source,target)){
+            this.chess.load(this.state.currentPosition.fen);
+            let move = this.chess.move({
+                from: source,
+                to: target,
+                promotion: 'q' // NOTE: always promote to a queen for example simplicity
+            });
+            let pos = new Position(this.chess.fen(), move, this.state.currentPosition);
+            this.state.currentPosition.addNextPosition(pos);
+            this.setState({
+                currentPosition: pos
+            })
+        }
     };
 }

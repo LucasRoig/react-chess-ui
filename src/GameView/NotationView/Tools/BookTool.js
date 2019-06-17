@@ -29,7 +29,7 @@ export default class BookTool extends Component {
                     </thead>
                     <tbody>
                     {this.state.moves.map(m => (
-                        <tr key={m.san}>
+                        <tr key={m.san} onClick={() => this.handleClickOnMove(m)}>
                             <td>{m.san}</td>
                             <td>{m.white + m.black + m.draws}</td>
                             <td><ScoreBar white={m.white} black={m.black} draws={m.draws}/></td>
@@ -42,6 +42,23 @@ export default class BookTool extends Component {
             </div>
         )
     }
+
+    handleClickOnMove = (move) => {
+        let from = move.uci.substring(0,2);
+        let to = move.uci.substring(2);
+        //Handle Castle
+        if(from === "e1" && move.san === "O-O"){
+            this.props.makeMove("e1","g1");
+        }else if(from === "e8" && move.san === "O-O"){
+            this.props.makeMove("e8","g8")
+        }else if(from === "e1" && move.san === "O-O-O"){
+            this.props.makeMove("e1","c1");
+        }else if(from === "e8" && move.san === "O-O-O"){
+            this.props.makeMove("e8","c8")
+        }else{
+            this.props.makeMove(from,to);
+        }
+    };
 
     _fetchData= () => {
         console.log("fetch data from lichess")

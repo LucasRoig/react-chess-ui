@@ -25,7 +25,7 @@ export default class Toolbar extends Component {
             <footer className="notation-footer">
                 {this.state.selectedTool === TOOL_BOOK &&
                 <div className="tool">
-                    <BookTool currentPosition={this.props.currentPosition}/>
+                    <BookTool currentPosition={this.props.currentPosition} makeMove={this.props.makeMove}/>
                 </div>
                 }
                 <a className="card-footer-item" hrefLang="#" onClick={() => this.selectTool(TOOL_BOOK)}>Book</a>
