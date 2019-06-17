@@ -18,13 +18,17 @@ export default class GameView extends Component {
     };
     render = () => {
         return (
-            <div className="container">
+            //tab index is required to catch onKeyDown
+            <div className="container" onKeyDown={this.onKeyDown} tabIndex="0">
                 <div className="columns">
-                    <div className="column">
-                        <ChessboardWrapper onDragStart={this.onDragStart}
-                                           onDrop={this.onDrop}
-                                           onSnapEnd={this.onSnapEnd}
-                                           position={this.state.currentPosition.fen}/>
+                    <div className="column" >
+                        <div onWheel={this.onWheel}>
+                            <ChessboardWrapper
+                                onDragStart={this.onDragStart}
+                                onDrop={this.onDrop}
+                                onSnapEnd={this.onSnapEnd}
+                                position={this.state.currentPosition.fen}/>
+                        </div>
                         <button onClick={this.previousPosition}>Previous</button>
                         <button onClick={this.nextPosition}>Next</button>
                         <textarea value={this.state.currentPosition.comment} onChange={this.saveComment}/>
@@ -38,6 +42,33 @@ export default class GameView extends Component {
                 </div>
             </div>
         )
+    };
+
+    onWheel = (e) => {
+        if(e.deltaY < 0){
+            this.previousPosition();
+            return;
+        }
+        if(e.deltaY > 0){
+            this.nextPosition();
+            return;
+        }
+    };
+
+    onKeyDown = (e) => {
+        //key left
+        if(e.keyCode === 37){
+            this.previousPosition();
+            e.preventDefault();
+            return;
+        }
+        //key right
+        if(e.keyCode === 39){
+            this.nextPosition();
+            e.preventDefault();
+            return;
+        }
+        console.log(e.keyCode)
     };
 
     saveComment = (e) => {
@@ -79,7 +110,7 @@ export default class GameView extends Component {
     };
 
     onDragStart = (source, piece, position, orientation) => {
-        this.chess.load(this.state.currentPosition.fen)
+        this.chess.load(this.state.currentPosition.fen);
         if (this.chess.game_over() === true ||
             (this.chess.turn() === 'w' && piece.search(/^b/) !== -1) ||
             (this.chess.turn() === 'b' && piece.search(/^w/) !== -1)) {
@@ -91,7 +122,7 @@ export default class GameView extends Component {
     onDrop = (source, target) => {
         // console.log('drop')
         // see if the move is legal
-        this.chess.load(this.state.currentPosition.fen)
+        this.chess.load(this.state.currentPosition.fen);
         let move = this.chess.move({
             from: source,
             to: target,
@@ -105,14 +136,14 @@ export default class GameView extends Component {
     };
 
     onSnapEnd = (source, target) => {
-        this.chess.load(this.state.currentPosition.fen)
+        this.chess.load(this.state.currentPosition.fen);
         let move = this.chess.move({
             from: source,
             to: target,
             promotion: 'q' // NOTE: always promote to a queen for example simplicity
         });
         let pos = new Position(this.chess.fen(), move, this.state.currentPosition);
-        this.state.currentPosition.addNextPosition(pos)
+        this.state.currentPosition.addNextPosition(pos);
         this.setState({
             currentPosition: pos
         })

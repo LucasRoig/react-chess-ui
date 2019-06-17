@@ -91,7 +91,6 @@ class NotationSubline {
     }
 
     render() {
-        console.log(this.sublines);
         return (
             <div className="subline">
                 {this.moves.map(move => move.render())}
