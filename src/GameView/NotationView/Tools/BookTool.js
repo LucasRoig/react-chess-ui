@@ -45,7 +45,11 @@ export default class BookTool extends Component {
 
     handleClickOnMove = (move) => {
         let from = move.uci.substring(0,2);
-        let to = move.uci.substring(2);
+        let to = move.uci.substring(2,4);
+        if(move.uci.length === 4){
+            let promotion = move.uci.substring(4);
+            this.props.makeMove(from,to,promotion);
+        }
         //Handle Castle
         if(from === "e1" && move.san === "O-O"){
             this.props.makeMove("e1","g1");
@@ -55,11 +59,12 @@ export default class BookTool extends Component {
             this.props.makeMove("e1","c1");
         }else if(from === "e8" && move.san === "O-O-O"){
             this.props.makeMove("e8","c8")
-        }else{
+        }else {
             this.props.makeMove(from,to);
         }
     };
 
+    //TODO fix memory leak, when book tool is unmounted the debounced function is still running
     _fetchData= () => {
         console.log("fetch data from lichess")
         fetch('https://explorer.lichess.ovh/master?fen=' + this.props.currentPosition.fen,{cache: "force-cache"})

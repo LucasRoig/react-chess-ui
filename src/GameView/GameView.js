@@ -26,7 +26,7 @@ export default class GameView extends Component {
                             <ChessboardWrapper
                                 onDragStart={this.onDragStart}
                                 onDrop={this.onDrop}
-                                onSnapEnd={this.makeMove}
+                                onSnapEnd={this.onSnapEnd}
                                 position={this.state.currentPosition.fen}/>
                         </div>
                         <button onClick={this.previousPosition}>Previous</button>
@@ -139,14 +139,19 @@ export default class GameView extends Component {
         }
     };
 
-    makeMove = (source, target) => {
+    //used to avoid the other parameters of onSnapEnd from the board
+    onSnapEnd = (source,target) => {
+        this.makeMove(source,target)
+    };
+
+    makeMove = (source, target, promotion) => {
         //TODO optimiser un jour?
         if(this.isMoveLegal(source,target)){
             this.chess.load(this.state.currentPosition.fen);
             let move = this.chess.move({
                 from: source,
                 to: target,
-                promotion: 'q' // NOTE: always promote to a queen for example simplicity
+                promotion: promotion || 'q' // NOTE: always promote to a queen for example simplicity
             });
             let pos = new Position(this.chess.fen(), move, this.state.currentPosition);
             this.state.currentPosition.addNextPosition(pos);
