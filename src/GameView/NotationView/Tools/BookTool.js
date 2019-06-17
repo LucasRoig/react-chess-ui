@@ -46,9 +46,10 @@ export default class BookTool extends Component {
     handleClickOnMove = (move) => {
         let from = move.uci.substring(0,2);
         let to = move.uci.substring(2,4);
-        if(move.uci.length === 4){
+        if(move.uci.length === 5){
             let promotion = move.uci.substring(4);
             this.props.makeMove(from,to,promotion);
+            return;
         }
         //Handle Castle
         if(from === "e1" && move.san === "O-O"){
