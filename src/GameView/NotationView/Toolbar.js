@@ -2,6 +2,7 @@ import React from "react";
 import {Component} from "react";
 import "./Toolbar.scss"
 import BookTool from "./Tools/BookTool";
+import ScrollManager from "./ScrollManager";
 
 const TOOL_NONE = {
     name: "None"
@@ -43,9 +44,6 @@ export default class Toolbar extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        let e = document.getElementsByClassName("move active");
-        if(e.length > 0){
-            e[0].scrollIntoView()
-        }
+        ScrollManager.scrollToActiveMove();
     }
 }

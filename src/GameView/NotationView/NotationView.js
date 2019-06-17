@@ -3,6 +3,7 @@ import {Component} from "react";
 import { NotationModel } from "./NotationModel";
 import Toolbar from  "./Toolbar"
 import "./Notation.scss"
+import ScrollManager from "./ScrollManager"
 
 export default class NotationView extends Component {
 
@@ -26,9 +27,6 @@ export default class NotationView extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        let e = document.getElementsByClassName("move active");
-        if(e.length > 0){
-            e[0].scrollIntoView()
-        }
+        ScrollManager.scrollToActiveMove();
     }
 }
