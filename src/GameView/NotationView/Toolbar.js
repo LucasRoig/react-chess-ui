@@ -2,6 +2,7 @@ import React from "react";
 import {Component} from "react";
 import "./Toolbar.scss"
 import BookTool from "./Tools/BookTool";
+import EngineTool from "./Tools/EngineTool"
 import ScrollManager from "./ScrollManager";
 
 const TOOL_NONE = {
@@ -10,6 +11,9 @@ const TOOL_NONE = {
 
 const TOOL_BOOK = {
     name: "Book",
+};
+const TOOL_ENGINE = {
+    name: "Engine"
 };
 
 
@@ -28,7 +32,13 @@ export default class Toolbar extends Component {
                     <BookTool currentPosition={this.props.currentPosition} makeMove={this.props.makeMove}/>
                 </div>
                 }
+                {this.state.selectedTool === TOOL_ENGINE &&
+                <div className="tool">
+                    <EngineTool currentPosition={this.props.currentPosition} makeMove={this.props.makeMove}/>
+                </div>
+                }
                 <a className="card-footer-item" hrefLang="#" onClick={() => this.selectTool(TOOL_BOOK)}>Book</a>
+                <a className="card-footer-item" hrefLang="#" onClick={() => this.selectTool(TOOL_ENGINE)}>Stockfish</a>
             </footer>
         )
     }

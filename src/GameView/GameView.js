@@ -1,5 +1,6 @@
 import {Component} from "react";
 import ChessboardWrapper from "./ChessBoard/ChessboardWrapper/ChessboardWrapper";
+
 // import MoveList from "./MoveList/MoveList";
 import NotationView from "./NotationView/NotationView";
 import React from "react";
@@ -160,4 +161,9 @@ export default class GameView extends Component {
             })
         }
     };
+
+    componentDidMount() {
+        // let stockfish = require("stockfish");
+        // let engine = stockfish();
+    }
 }
