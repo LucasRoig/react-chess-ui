@@ -5,7 +5,7 @@ import StockfishManager from "../../../engine/StockfishManager";
 
 export default class EngineTool extends Component {
     state = {
-        line: {}
+        line: []
     };
 
     render() {
@@ -13,11 +13,9 @@ export default class EngineTool extends Component {
             <div className="tool-book">
                 <div>
                     <div className="title">Stockfish</div>
-                    {Object.keys(this.state.line).map(key => (
-                        <div>
-                            <span>{key}</span>
-                            <span>{this.state.line[key]}</span>
-                        </div>
+                    {this.state.line.map(move => (
+                        <span>{move.san + " "}
+                        </span>
                     ))}
                 </div>
             </div>
