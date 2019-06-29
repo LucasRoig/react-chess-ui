@@ -2,6 +2,7 @@ import React from "react";
 import {Component} from "react";
 import "../Toolbar.scss"
 import StockfishManager from "../../../engine/StockfishManager";
+import MoveUtils from "../../../utils/MoveUtils";
 
 export default class EngineTool extends Component {
     state = {
@@ -13,10 +14,7 @@ export default class EngineTool extends Component {
             <div className="tool-book">
                 <div>
                     <div className="title">Stockfish</div>
-                    {this.state.line.map(move => (
-                        <span>{move.san + " "}
-                        </span>
-                    ))}
+                    {MoveUtils.moveListToString(this.state.line,this.props.currentPosition)}
                 </div>
             </div>
         )
@@ -33,6 +31,7 @@ export default class EngineTool extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if(prevProps.currentPosition.fen !== this.props.currentPosition.fen){
+            this.setState({line:[]})
             this.startAnalyse();
         }
     }

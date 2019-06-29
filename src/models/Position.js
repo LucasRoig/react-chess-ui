@@ -1,3 +1,4 @@
+import * as Constants from './Constants';
 export default class Position{
     constructor(fen, lastMove, previousPosition){
         this.fen = fen;
@@ -16,6 +17,13 @@ export default class Position{
         }else{
             this.moveNumber = 0
         }
+    }
+
+    sideToMove(){
+        if(!this.lastMove || this.lastMove.color === Constants.BLACK)
+            return Constants.WHITE
+        else
+            return Constants.BLACK
     }
 
     addNextPosition(nextPosition){
