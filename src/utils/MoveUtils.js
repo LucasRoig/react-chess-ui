@@ -4,7 +4,7 @@ export default {
         let result = "";
         let moveCount = initialPosition.sideToMove() === Constants.WHITE ? initialPosition.moveNumber + 1 : initialPosition.moveNumber;
         moveList.forEach((move,index) => {
-            if(index == 0){
+            if(index === 0){
                 result += move.color === 'w' ? moveCount + "." : moveCount + "..."
             }else if(move.color === 'w'){
                 result += moveCount + "."
@@ -15,7 +15,7 @@ export default {
             }
 
         });
-        console.log(result)
+        console.log(result);
         return result;
     }
 };

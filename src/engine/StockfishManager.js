@@ -1,16 +1,57 @@
 import  Chess  from "chess.js";
 
+class EngineState{
+    constructor(engineName, numberOfLines){
+        this.name = engineName;
+        this.lines = [];
+        for (let i = 0; i<numberOfLines; i++){
+            this.lines.push({});
+        }
+        this.depth = 0;
+        this.selDepth = 0;
+    }
+
+    update(data){
+        let moveList = extractMovesFromLine(data['pv'],currentWork);
+        this.depth = data['depth'];
+        this.selDepth = data['seldepth'];
+        let lineNumber = data['multipv'] - 1;
+        let score = data['score'].split(' ')[1] / 100;
+        this.lines[lineNumber] = new EngineLine(score,moveList);
+    }
+}
+
+class EngineLine{
+    constructor(score,line){
+        this.score = score;
+        this.line = line;
+    }
+}
+
 const keywords = ['depth','seldepth','time','nodes','pv','multipv','score','currmove','currmovenumber', 'hashfull',
                     'nps', 'tbhits', 'cpuload', 'string', 'refutation', 'currline', 'bmc'];
+const ENGINE_NAME = "Stockfish 10";
+
 let nextWork = '';
 let currentWork = '';
 let callOnInfo = () => {};
 let engine = new Worker("/stockfish.js");
+let currentState = {};
+// let multipv = 1;
+
 engine.onmessage = function (message) {
     console.log("received : ", message.data);
     handleResponse(message.data);
 };
-engine.postMessage('setoption name multipv value 1')
+
+
+let setMultiPv = (value) => {
+    engine.postMessage('setoption name multipv value ' + value);
+    // multipv = value;
+    currentState = new EngineState(ENGINE_NAME,value);
+};
+
+setMultiPv(3);
 
 let handleResponse = (data) =>{
     if(data === 'readyok'){
@@ -19,8 +60,8 @@ let handleResponse = (data) =>{
         engine.postMessage('go depth 20');
     }else if(data.startsWith('info')){
         let formatedData = formatInfo(data);
-        let moveList = extractMovesFromLine(formatedData['pv'],currentWork);
-        callOnInfo(moveList);
+        currentState.update(formatedData);
+        callOnInfo(currentState);
     }
 };
 

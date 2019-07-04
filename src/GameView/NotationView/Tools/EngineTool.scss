@@ -1,0 +1,21 @@
+.engine-line{
+  height: 2em;
+  line-height: 2em;
+  border-top: 1px solid #d9d9d9;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.line-text{
+  margin-left: 4px;
+  font-family: 'Chess', 'Noto Sans';
+  //white-space: nowrap;
+}
+
+.score{
+  width: 40px;
+  text-align: center;
+  display: inline-block;
+}

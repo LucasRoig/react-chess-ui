@@ -7,6 +7,7 @@ import React from "react";
 import Position from "../models/Position";
 import Chess from "chess.js";
 import Game from "../models/Game";
+import "./gameview.scss"
 
 export default class GameView extends Component {
     chess = new Chess();
@@ -35,7 +36,7 @@ export default class GameView extends Component {
                         <textarea value={this.state.currentPosition.comment} onChange={this.saveComment}/>
                         <button onClick={this.saveComment}>Save Comment </button>
                     </div>
-                    <div className="column">
+                    <div className="column notation-column">
                         <NotationView game={this.game} handleClick={this.setPosition} currentPosition={this.state.currentPosition} makeMove={this.makeMove}/>
                         {/* <MoveList game={this.game} handleClick={this.setPosition}
                                   currentPosition={this.state.currentPosition}/> */}
