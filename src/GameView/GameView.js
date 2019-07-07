@@ -37,7 +37,11 @@ export default class GameView extends Component {
                         <button onClick={this.saveComment}>Save Comment </button>
                     </div>
                     <div className="column notation-column">
-                        <NotationView game={this.game} handleClick={this.setPosition} currentPosition={this.state.currentPosition} makeMove={this.makeMove}/>
+                        <NotationView game={this.game}
+                                      handleClick={this.setPosition}
+                                      currentPosition={this.state.currentPosition}
+                                      makeMove={this.makeMove}
+                                      onContextualAction={this.handleContextualActionOnNotation}/>
                         {/* <MoveList game={this.game} handleClick={this.setPosition}
                                   currentPosition={this.state.currentPosition}/> */}
                     </div>
@@ -74,19 +78,38 @@ export default class GameView extends Component {
     };
 
     saveComment = (e) => {
+        let p = this.findPositionInGame(this.state.currentPosition);
+        if(p){
+            p.comment = e.target.value
+            this.setState({currentPosition: p});
+        }
+        // let positionStack = [this.game.startingPosition];
+        // while (positionStack.length > 0){
+        //     let position = positionStack.pop();
+        //     if(position == null) continue;
+        //     positionStack.push(position.nextPosition);
+        //     position.sublines.forEach(p => positionStack.push(p));
+        //     if(position === this.state.currentPosition){
+        //         position.comment = e.target.value;
+        //         this.setState({currentPosition: position});
+        //         break;
+        //     }
+        // }
+    };
+
+    findPositionInGame(positionToFind){
         let positionStack = [this.game.startingPosition];
         while (positionStack.length > 0){
             let position = positionStack.pop();
             if(position == null) continue;
             positionStack.push(position.nextPosition);
             position.sublines.forEach(p => positionStack.push(p));
-            if(position === this.state.currentPosition){
-                position.comment = e.target.value;
-                this.setState({currentPosition: position});
-                break;
+            if(position === positionToFind){
+                return position;
             }
         }
-    };
+        return null;
+    }
 
     setPosition = (position) => {
         if (!position) return;
@@ -161,6 +184,19 @@ export default class GameView extends Component {
                 currentPosition: pos
             })
         }
+    };
+
+    handleContextualActionOnNotation = (e, data, target) =>{
+        const {action,position} = data;
+        if(action === "DELETE_NEXT_POSITIONS"){
+            let p = this.findPositionInGame(position);
+            if(p){
+                p.nextPosition = null;
+                p.sublines = [];
+                this.setState({currentPosition:p})
+            }
+        }
+        console.log(e,data,target);
     };
 
     componentDidMount() {

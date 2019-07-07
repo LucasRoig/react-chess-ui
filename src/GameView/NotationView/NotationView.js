@@ -8,7 +8,7 @@ import ScrollManager from "./ScrollManager"
 export default class NotationView extends Component {
 
     render(){
-        let notationModel = new NotationModel(this.props.game, this.props.handleClick, this.props.currentPosition);
+        let notationModel = new NotationModel(this.props.game, this.props.handleClick, this.props.currentPosition, this.props.onContextualAction);
         return (
             <div className="card game-details-panel">
                 <header className="card-header game-header">
