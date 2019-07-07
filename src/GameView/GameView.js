@@ -194,6 +194,32 @@ export default class GameView extends Component {
                 p.nextPosition = null;
                 p.sublines = [];
                 this.setState({currentPosition:p})
+                return;
+            }
+        }
+        if(action === "PROMOTE_SUBLINE" || action === "DELETE_SUBLINE"){
+            let p = this.findPositionInGame(position);
+            if(p){
+                let positionBeforeP = p.previousPosition;
+                while(positionBeforeP){
+                    if(positionBeforeP.nextPosition !== p){
+                        let i = positionBeforeP.sublines.indexOf(p);
+                        if(action === "PROMOTE_SUBLINE"){
+                            positionBeforeP.sublines[i] = positionBeforeP.nextPosition;
+                            positionBeforeP.nextPosition = p;
+                            this.setState({currentPosition:position})
+                            return;
+                        }else if (action === "DELETE_SUBLINE"){
+                            positionBeforeP.sublines.splice(i,1)
+                            this.setState({currentPosition:positionBeforeP})
+                            console.log(this.game)
+                            return;
+                        }
+                    }
+                    p = positionBeforeP;
+                    positionBeforeP = p.previousPosition;
+                }
+
             }
         }
         console.log(e,data,target);
