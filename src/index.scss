@@ -1,10 +1,10 @@
 
 @import 'bulma/bulma.sass';
 
-//@font-face {
-//  font-family: 'Chess';
-//  src: url("TT_CHEQ.TTF");
-//}
+@font-face {
+  font-family: 'Chess';
+  src: url("lichess.chess.woff2");
+}
 body {
   margin: 0;
   padding: 0;
