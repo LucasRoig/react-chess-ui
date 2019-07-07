@@ -58,7 +58,7 @@ export default class EngineTool extends Component {
             )
         }
         return (
-            <div className="tool-book">
+            <div className="tool-engine">
                 <div>
                     <div className="title">Stockfish</div>
                 </div>
