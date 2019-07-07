@@ -1,9 +1,38 @@
 import * as Constants from "../../models/Constants"
 import React from 'react'
 import './Notation.scss'
-import { ContextMenuTrigger, ContextMenu, MenuItem } from "react-contextmenu";
+import { ContextMenuTrigger, ContextMenu, MenuItem, connectMenu } from "react-contextmenu";
 
 const MAIN_LINE_MOVE_CONTEXT_MENU_ID = "mainLineMoveContextMenu";
+
+const DynamicMainLineMoveMenu = (props) => {
+    const {id, trigger} = props;
+    let contextMenuItemAttributes = {
+        className: "item"
+    };
+    let title = "";
+    if(trigger){
+        title = trigger.position.moveNumber + (trigger.position.sideToMove() === Constants.BLACK ? '.' : '...')+ trigger.san;
+    }
+    return(
+        <ContextMenu id={id} className="context-menu">
+            {trigger && <p className="title">{title}</p>}
+            {trigger &&
+            <MenuItem attributes={contextMenuItemAttributes}>
+                Supprimer la suite
+            </MenuItem>
+            }
+            {trigger &&
+            <MenuItem attributes={contextMenuItemAttributes}>
+                TEST
+            </MenuItem>
+            }
+        </ContextMenu>
+    )
+};
+
+const MainLineMoveMenu = connectMenu(MAIN_LINE_MOVE_CONTEXT_MENU_ID)(DynamicMainLineMoveMenu);
+
 class NotationMove {
     constructor(san, position, onMoveClicked, currentPosition) {
         this.san = san;
@@ -17,8 +46,19 @@ class NotationMove {
     }
 
     render() {
+        let collect = (props) => {
+            return{
+                position: props.position,
+                san: props.san
+            }
+        };
         return (
-            <ContextMenuTrigger id={MAIN_LINE_MOVE_CONTEXT_MENU_ID} attributes={this.classes} onClick={() => this.handleClick(this.position)}>
+            <ContextMenuTrigger id={MAIN_LINE_MOVE_CONTEXT_MENU_ID}
+                                attributes={this.classes}
+                                position={this.position}
+                                san={this.san}
+                                collect={collect}
+                                onClick={() => this.handleClick(this.position)}>
                {this.san}
             </ContextMenuTrigger>
         )
@@ -160,28 +200,12 @@ export class NotationModel {
     }
 
     render() {
-        let contextMenuItemAttributes = {
-            className: "item"
-        };
         return (
             <div className="notation">
                 {this.notation.map(n => n.render())}
-                <ContextMenu id={MAIN_LINE_MOVE_CONTEXT_MENU_ID} className="context-menu">
-                    <p className="title">Move</p>
-                    <MenuItem attributes={contextMenuItemAttributes}>
-                        Supprimer la suite
-                    </MenuItem>
-                    <MenuItem attributes={contextMenuItemAttributes}>
-                        TEST
-                    </MenuItem>
-                    <MenuItem attributes={contextMenuItemAttributes}>
-                        TEST
-                    </MenuItem>
-                    <MenuItem attributes={contextMenuItemAttributes}>
-                        TEST
-                    </MenuItem>
-                </ContextMenu>
+                <MainLineMoveMenu/>
             </div>
         )
     }
 }
+
