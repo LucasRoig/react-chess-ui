@@ -144,3 +144,32 @@
 .move-list{
     padding:0;
 }
+
+.context-menu{
+    background: white;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    border-radius: 3px;
+    .title{
+        padding: .4em;
+        text-align: center;
+        font-size: 1.2em;
+        border-bottom: 1px solid #d9d9d9;
+        margin: 0;
+        background: linear-gradient(to bottom, #f5f5f5 0%, #ededed 100%);
+        text-shadow: 0 1px 0 #fff;
+        font-family: 'Chess', 'Noto Sans', Sans-Serif;
+        font-weight: normal;
+    }
+    .item{
+        color: #4d4d4d;
+        padding: .5em .6em .5em .3em;
+        cursor: pointer;
+        font-size: .9em;
+    }
+    .item:hover{
+        background: #fbede6;
+    }
+    .item:focus{
+        outline: none;
+    }
+}

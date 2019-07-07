@@ -6,6 +6,7 @@ import StockfishManager from "../../../engine/StockfishManager";
 import MoveUtils from "../../../utils/MoveUtils";
 import  * as Constants from '../../../models/Constants'
 
+//TODO: memory leek, continue de tourner meme si on ferme l'outil
 let EngineLines = (props) => {
     return (
         <div>

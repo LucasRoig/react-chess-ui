@@ -1,7 +1,9 @@
 import * as Constants from "../../models/Constants"
 import React from 'react'
 import './Notation.scss'
+import { ContextMenuTrigger, ContextMenu, MenuItem } from "react-contextmenu";
 
+const MAIN_LINE_MOVE_CONTEXT_MENU_ID = "mainLineMoveContextMenu";
 class NotationMove {
     constructor(san, position, onMoveClicked, currentPosition) {
         this.san = san;
@@ -9,10 +11,17 @@ class NotationMove {
         this.handleClick = onMoveClicked;
         this.classes = "move ";
         if(currentPosition === position) this.classes += " active";
+        this.classes = {
+            className : this.classes
+        }
     }
 
     render() {
-        return <div className={this.classes} onClick={() => this.handleClick(this.position)}>{this.san}</div>
+        return (
+            <ContextMenuTrigger id={MAIN_LINE_MOVE_CONTEXT_MENU_ID} attributes={this.classes} onClick={() => this.handleClick(this.position)}>
+               {this.san}
+            </ContextMenuTrigger>
+        )
     }
 }
 
@@ -151,6 +160,28 @@ export class NotationModel {
     }
 
     render() {
-        return this.notation.map(n => n.render())
+        let contextMenuItemAttributes = {
+            className: "item"
+        };
+        return (
+            <div className="notation">
+                {this.notation.map(n => n.render())}
+                <ContextMenu id={MAIN_LINE_MOVE_CONTEXT_MENU_ID} className="context-menu">
+                    <p className="title">Move</p>
+                    <MenuItem attributes={contextMenuItemAttributes}>
+                        Supprimer la suite
+                    </MenuItem>
+                    <MenuItem attributes={contextMenuItemAttributes}>
+                        TEST
+                    </MenuItem>
+                    <MenuItem attributes={contextMenuItemAttributes}>
+                        TEST
+                    </MenuItem>
+                    <MenuItem attributes={contextMenuItemAttributes}>
+                        TEST
+                    </MenuItem>
+                </ContextMenu>
+            </div>
+        )
     }
 }
