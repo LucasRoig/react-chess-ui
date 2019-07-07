@@ -4,6 +4,7 @@ import './Notation.scss'
 import { ContextMenuTrigger, ContextMenu, MenuItem, connectMenu } from "react-contextmenu";
 
 const MAIN_LINE_MOVE_CONTEXT_MENU_ID = "mainLineMoveContextMenu";
+const SUB_LINE_MOVE_CONTEXT_MENU_ID = "subLineMoveContextMenu";
 
 const DynamicMainLineMoveMenu = (props) => {
     const {id, trigger} = props;
@@ -22,9 +23,31 @@ const DynamicMainLineMoveMenu = (props) => {
                 Supprimer la suite
             </MenuItem>
             }
+        </ContextMenu>
+    )
+};
+
+
+const DynamicSublineMoveMenu = (props) => {
+    const {id, trigger} = props;
+    let contextMenuItemAttributes = {
+        className: "item"
+    };
+    let title = "";
+    if(trigger){
+        title = trigger.position.moveNumber + (trigger.position.sideToMove() === Constants.BLACK ? '.' : '...')+ trigger.san;
+    }
+    return(
+        <ContextMenu id={id} className="context-menu">
+            {trigger && <p className="title">{title}</p>}
             {trigger &&
             <MenuItem attributes={contextMenuItemAttributes}>
-                TEST
+                Supprimer la suite
+            </MenuItem>
+            }
+            {trigger &&
+            <MenuItem attributes={contextMenuItemAttributes}>
+                Promouvoir la variante
             </MenuItem>
             }
         </ContextMenu>
@@ -32,6 +55,7 @@ const DynamicMainLineMoveMenu = (props) => {
 };
 
 const MainLineMoveMenu = connectMenu(MAIN_LINE_MOVE_CONTEXT_MENU_ID)(DynamicMainLineMoveMenu);
+const SubLineMoveMenu = connectMenu(SUB_LINE_MOVE_CONTEXT_MENU_ID)(DynamicSublineMoveMenu);
 
 class NotationMove {
     constructor(san, position, onMoveClicked, currentPosition) {
@@ -40,8 +64,9 @@ class NotationMove {
         this.handleClick = onMoveClicked;
         this.classes = "move ";
         if(currentPosition === position) this.classes += " active";
-        this.classes = {
-            className : this.classes
+        this.attributes = {
+            className : this.classes,
+            onClick:() => this.handleClick(this.position)
         }
     }
 
@@ -54,11 +79,11 @@ class NotationMove {
         };
         return (
             <ContextMenuTrigger id={MAIN_LINE_MOVE_CONTEXT_MENU_ID}
-                                attributes={this.classes}
+                                attributes={this.attributes}
                                 position={this.position}
                                 san={this.san}
                                 collect={collect}
-                                onClick={() => this.handleClick(this.position)}>
+                                >
                {this.san}
             </ContextMenuTrigger>
         )
@@ -161,16 +186,30 @@ class NotationSublineMove {
         this.handleClick = onMoveClicked;
         this.classes = "subline-move ";
         if(currentPosition === position) this.classes += " active";
+        this.attributes = {
+            className: this.classes,
+            onClick: () => this.handleClick(this.position)
+        }
     }
 
     render() {
+        let collect = (props) => {
+            return{
+                position: props.position,
+                san: props.san
+            }
+        };
         return (
-            <div className={this.classes} onClick={() => this.handleClick(this.position)}>
+            <ContextMenuTrigger id={SUB_LINE_MOVE_CONTEXT_MENU_ID}
+                                attributes={this.attributes}
+                                position={this.position}
+                                san={this.san}
+                                collect={collect}>
                 {this.moveNumber &&
                 <div className="move-number">{this.moveNumber}</div>
                 }
                 {this.san}
-            </div>)
+            </ContextMenuTrigger>)
     }
 }
 
@@ -204,6 +243,7 @@ export class NotationModel {
             <div className="notation">
                 {this.notation.map(n => n.render())}
                 <MainLineMoveMenu/>
+                <SubLineMoveMenu/>
             </div>
         )
     }
