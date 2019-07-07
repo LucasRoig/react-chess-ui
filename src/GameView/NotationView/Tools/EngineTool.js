@@ -4,6 +4,7 @@ import "../Toolbar.scss"
 import "./EngineTool.scss"
 import StockfishManager from "../../../engine/StockfishManager";
 import MoveUtils from "../../../utils/MoveUtils";
+import  * as Constants from '../../../models/Constants'
 
 let EngineLines = (props) => {
     return (
@@ -20,11 +21,13 @@ let EngineLines = (props) => {
 };
 
 let EngineLine = (props) => {
-    let score;
-    if(props.score > 0){
-        score = '+' + props.score;
+    let score = props.score;
+    if(props.currentPosition.sideToMove() === Constants.BLACK)
+        score *= -1;
+    if(score > 0){
+        score = '+' + score;
     }else{
-        score = '-' + (-1 * props.score);
+        score = '-' + (-1 * score);
     }
     return(
 
@@ -63,7 +66,7 @@ export default class EngineTool extends Component {
     }
 
     onEngineInfo = (engineState) => {
-        console.log(engineState);
+        // console.log(engineState);
         this.setState({engineState})
     };
 

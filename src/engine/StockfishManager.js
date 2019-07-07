@@ -1,5 +1,7 @@
 import  Chess  from "chess.js";
 
+
+//TODO : réécrire tout ça, on peut s'inspirer de ce qu'a fait lichess ou partir sur un gros automate.
 class EngineState{
     constructor(engineName, numberOfLines){
         this.name = engineName;
@@ -37,16 +39,24 @@ let currentWork = '';
 let callOnInfo = () => {};
 let engine = new Worker("/stockfish.js");
 let currentState = {};
+let running = false;
+let onReady = () => {};
 // let multipv = 1;
 
+let send = (message) => {
+    console.log("Send to engine : " + message);
+    engine.postMessage(message);
+};
+
 engine.onmessage = function (message) {
-    console.log("received : ", message.data);
+    if(!message.data.startsWith('info'))
+        console.log("received : ", message.data);
     handleResponse(message.data);
 };
 
 
 let setMultiPv = (value) => {
-    engine.postMessage('setoption name multipv value ' + value);
+    send('setoption name multipv value ' + value);
     // multipv = value;
     currentState = new EngineState(ENGINE_NAME,value);
 };
@@ -55,19 +65,24 @@ setMultiPv(3);
 
 let handleResponse = (data) =>{
     if(data === 'readyok'){
-        engine.postMessage('position fen ' + nextWork);
+        send('position fen ' + nextWork);
         currentWork = nextWork;
-        engine.postMessage('go depth 20');
+        send('go depth 20');
     }else if(data.startsWith('info')){
+        running = true;
         let formatedData = formatInfo(data);
         currentState.update(formatedData);
         callOnInfo(currentState);
+    }else if(data.startsWith('bestmove')){
+        running = false;
+        onReady();
+        onReady = () => {};
     }
 };
 
 let extractMovesFromLine = (line, fen) => {
     let movesUci = line.trim().split(' ');
-    console.log(movesUci);
+    // console.log(movesUci);
     let chess = new Chess(fen);
     let moveList = movesUci.map(uci => {
         let from = uci.substring(0,2);
@@ -110,14 +125,20 @@ let formatInfo = (data) => {
   return formatedData;
 };
 
-
 let StockfishManager = {
     analysePosition: (fen, onInfo) => {
         nextWork = fen;
         callOnInfo = onInfo;
-        engine.postMessage('stop');
-        engine.postMessage('ucinewgame');
-        engine.postMessage('isready');
+        if(!running){
+            send('ucinewgame');
+            send('isready');
+        }else{
+            onReady = () => {
+                send('ucinewgame');
+                send('isready');
+            };
+            send('stop')
+        }
     }
 };
 

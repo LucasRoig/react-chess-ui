@@ -13,9 +13,8 @@ export default {
             if(move.color === "b"){
                 moveCount++;
             }
-
         });
-        console.log(result);
+        // console.log(result);
         return result;
     }
 };
