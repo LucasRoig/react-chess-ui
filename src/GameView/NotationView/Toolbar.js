@@ -37,8 +37,10 @@ export default class Toolbar extends Component {
                     <EngineTool currentPosition={this.props.currentPosition} makeMove={this.props.makeMove}/>
                 </div>
                 }
-                <a className="card-footer-item" hrefLang="#" onClick={() => this.selectTool(TOOL_BOOK)}>Book</a>
-                <a className="card-footer-item" hrefLang="#" onClick={() => this.selectTool(TOOL_ENGINE)}>Stockfish</a>
+                <div className="tool-buttons">
+                    <a className="card-footer-item" hrefLang="#" onClick={() => this.selectTool(TOOL_BOOK)}>Book</a>
+                    <a className="card-footer-item" hrefLang="#" onClick={() => this.selectTool(TOOL_ENGINE)}>Stockfish</a>
+                </div>
             </footer>
         )
     }
