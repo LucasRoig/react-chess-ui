@@ -7,7 +7,7 @@ export default class Position{
         this.nextPosition = null;
         this.comment = "";
         this.sublines = [];
-        
+
         if(this.previousPosition){
             if(this.lastMove.color === 'w'){
                 this.moveNumber = this.previousPosition.moveNumber + 1;
@@ -19,7 +19,7 @@ export default class Position{
         }
     }
 
-    sideToMove(){
+    sideToMove() {
         if(!this.lastMove || this.lastMove.color === Constants.BLACK)
             return Constants.WHITE
         else

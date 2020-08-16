@@ -52,9 +52,9 @@ const NavBar = () => (
                         <a className="button is-primary" href="/">
                             <strong>Sign up</strong>
                         </a>
-                        <a className="button is-light" href="/">
+                        <Link className="button is-light" to="/auth/login">
                             Log in
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

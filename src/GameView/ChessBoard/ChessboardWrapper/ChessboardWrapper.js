@@ -8,7 +8,7 @@ class ChessboardWrapper extends Component{
     };
     render(){
         return (
-            <div id="board" style={this.style} />
+            <div id="board" style={this.style} className={this.props.className} />
         )
     }
     componentDidUpdate(prevProps, prevState){
@@ -24,9 +24,10 @@ class ChessboardWrapper extends Component{
           position:this.props.position,
           onDragStart: this.props.onDragStart,
           onDrop: this.props.onDrop,
-          onSnapEnd: this.props.onSnapEnd
+          onSnapEnd: this.props.onSnapEnd,
+          orientation: this.props.orientation || "white"
         }
-    
+
         console.log('yo');
         this.board = window.ChessBoard('board', config);
       }
