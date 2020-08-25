@@ -85,10 +85,23 @@ const deleteDatabase = (databaseId) => {
   });
 }
 
+const importPgn = (databaseId, file) => {
+  const formData = new FormData();
+  formData.append("pgnFile", file, file.name);
+  return ApiService.post("/database/" + databaseId + "/uploadPgn", formData).then(res => {
+    if (res.status !== 200 && res.status !== 201) {
+      throw res;
+    } else {
+      return res.data;
+    }
+  });
+}
+
 export default {
   listDatabases,
   postDatabase,
   getDetails,
   createGame,
-  deleteDatabase
+  deleteDatabase,
+  importPgn
 }

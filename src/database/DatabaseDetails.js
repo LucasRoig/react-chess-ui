@@ -28,7 +28,8 @@ class DatabaseDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      database: null
+      database: null,
+      selectedPgn: null
     }
   }
 
@@ -48,6 +49,17 @@ class DatabaseDetails extends Component {
     });
   }
 
+  onFileChanged = (e) => {
+    this.setState({selectedPgn: e.target.files[0]})
+  }
+
+  uploadPgn = () => {
+    const selectedPgn = this.state.selectedPgn;
+    if (selectedPgn) {
+      DatabaseService.importPgn(this.state.database.id, selectedPgn);
+    }
+  }
+
   render() {
     return (
       <>
@@ -56,6 +68,10 @@ class DatabaseDetails extends Component {
             <h1 className="title is-1">{this.state.database.name}</h1>
             <div>
               <button className="button" onClick={this.createGame}>Add new Game</button>
+            </div>
+            <div>
+              <input type="file" onChange={this.onFileChanged}/>
+              <button className="button" onClick={this.uploadPgn}>Importer</button>
             </div>
             <table className="databases table is-striped is-hoverable is-fullwidth">
               <thead>
