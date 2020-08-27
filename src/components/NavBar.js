@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from "react-router-dom";
 import {connect, useDispatch} from "react-redux";
 import {logoutSuccessAction} from "../store/AuthReducer";
+import {LOGIN, SIGN_UP} from "../Routes";
 const NavBar = (props) => {
     let dispatch = useDispatch();
     function logout() {
@@ -38,10 +39,10 @@ const NavBar = (props) => {
                             <button className="button is-light" onClick={logout}>Logout</button>
                             :
                             <div className="buttons">
-                                <a className="button is-primary" href="/">
+                                <Link className="button is-primary" to={SIGN_UP}>
                                     <strong>Sign up</strong>
-                                </a>
-                                <Link className="button is-light" to="/auth/login">
+                                </Link>
+                                <Link className="button is-light" to={LOGIN}>
                                     Log in
                                 </Link>
                             </div>

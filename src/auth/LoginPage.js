@@ -19,7 +19,6 @@ class LoginPage extends Component {
       this.setState({
         [name]: event.target.value
       });
-
   }
 
   handleSubmit = (e) => {

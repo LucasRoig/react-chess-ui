@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import './App.css';
 
 import NavBar from './components/NavBar';
-import {LIST_DATABASE, LOGIN} from "./Routes";
+import {LIST_DATABASE, LOGIN, SIGN_UP} from "./Routes";
 import HistoryProvider from "./services/HistoryProvider";
 import {connect} from "react-redux";
 
@@ -24,6 +24,10 @@ const DatabaseDetails = withRouter(
 
 const LoginPage = withRouter(
   lazy(() => import("./auth/LoginPage"))
+)
+
+const SignUpPage = withRouter(
+    lazy(() => import("./auth/SignUpPage"))
 )
 
 class App extends Component {
@@ -49,6 +53,9 @@ class App extends Component {
               </Route>
               <Route path={LOGIN}>
                 {this.props.isAuthenticated ? <Redirect to={LIST_DATABASE}/> : <LoginPage/>}
+              </Route>
+              <Route path={SIGN_UP}>
+                {this.props.isAuthenticated ? <Redirect to={LIST_DATABASE}/> : <SignUpPage/>}
               </Route>
               <Route path="/training/:id">
                 {this.props.isAuthenticated ? <TrainingView/> : <Redirect to={LOGIN}/> }
