@@ -2,6 +2,8 @@ import ApiService from "../services/ApiService";
 import t from "tcomb";
 import HistoryProvider from "../services/HistoryProvider";
 import {LIST_DATABASE} from "../Routes";
+import store from "../store";
+import {loginSuccessAction} from "../store/AuthReducer";
 
 const LoginRequest = t.struct({
   email: t.String,
@@ -20,6 +22,7 @@ export default {
           handleInvalidCredentials();
         } else if (res.status === 200) {
           let response = LoginResponse(res.data)
+          store.dispatch(loginSuccessAction(response.token));
           ApiService.setToken(response.token);
           localStorage.setItem("token", response.token)
           HistoryProvider.getHistory().push(LIST_DATABASE)
@@ -29,3 +32,4 @@ export default {
       })
   }
 }
+
