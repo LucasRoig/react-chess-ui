@@ -9,6 +9,7 @@ import Chess from "chess.js";
 import Game from "../models/Game";
 import "./gameview.scss"
 import GameService from "./GameService";
+import ChessgroundWrapper from "./ChessBoard/ChessgroundWrapper";
 
 export default class GameView extends Component {
   chess = new Chess();
@@ -38,11 +39,10 @@ export default class GameView extends Component {
       <>
         {this.state.game ?
           //tab index is required to catch onKeyDown
-          <div className="container" onKeyDown={this.onKeyDown} tabIndex="0">
-            <div className="columns">
-              <div className="column">
+            <div className="game-view" onKeyDown={this.onKeyDown} tabIndex="0">
+              <div className="game-column">
                 <div onWheel={this.onWheel}>
-                  <ChessboardWrapper
+                  <ChessgroundWrapper
                     onDragStart={this.onDragStart}
                     onDrop={this.onDrop}
                     onSnapEnd={this.onSnapEnd}
@@ -53,7 +53,7 @@ export default class GameView extends Component {
                 <textarea value={this.state.currentPosition.comment} onChange={this.saveComment}/>
                 <button onClick={this.saveComment}>Save Comment</button>
               </div>
-              <div className="column notation-column">
+              <div className="notation-column">
                 <NotationView game={this.state.game}
                               handleClick={this.setPosition}
                               currentPosition={this.state.currentPosition}
@@ -63,7 +63,6 @@ export default class GameView extends Component {
                                   currentPosition={this.state.currentPosition}/> */}
               </div>
             </div>
-          </div>
           : <div>loading</div>}
       </>
     )
