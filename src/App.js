@@ -44,7 +44,7 @@ class App extends Component {
               <Route exact path={LIST_DATABASE}>
                 {this.props.isAuthenticated ? <DatabaseList/> : <Redirect to={LOGIN}/> }
               </Route>
-              <Route exact path="/game" component={GameView} />
+              {/*<Route exact path="/game" component={GameView} />*/}
               <Route exact path="/game/:id">
                 {this.props.isAuthenticated ? <GameView/> : <Redirect to={LOGIN}/> }
               </Route>
