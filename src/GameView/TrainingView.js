@@ -10,6 +10,7 @@ import _ from "lodash"
 import './trainingview.scss'
 import {ModalWindow, showModal} from "../components/modal/Modal";
 import {LIST_DATABASE} from "../Routes";
+import ChessgroundWrapper from "./ChessBoard/ChessgroundWrapper";
 
 class ConfigModal extends ModalWindow {
   constructor(props) {
@@ -146,7 +147,8 @@ export default class TrainingView extends React.Component {
       errorDuringLine: false,
       showDemo: true,
       demoDelay: 800,
-      restartAfterError: true
+      restartAfterError: true,
+      legalMoves:{}
     }
     this.chess = new Chess();
     this.lines = [];
@@ -168,6 +170,29 @@ export default class TrainingView extends React.Component {
       showModal(<ConfigModal onStart={start} game={game} history={this.props.history}/>)
     })
   }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.state.currentPosition !== prevState.currentPosition) {
+      this.calcLegalMoves();
+    }
+  }
+
+  calcLegalMoves() {
+    if (! (this.state.currentPosition && this.state.currentPosition.fen)) {
+      return;
+    }
+    const legalMoves = {get : d => legalMoves[d]};
+    let chess = new Chess();
+    chess.load(this.state.currentPosition.fen);
+    chess.SQUARES.forEach(square => {
+      const ms = chess.moves({square, verbose: true})
+      if (ms.length > 0) {
+        legalMoves[square] = ms.map(move => move.to)
+      }
+    })
+    this.setState({legalMoves})
+  }
+
 
   showDemo = async (line) => {
     function sleep(duration) {
@@ -250,26 +275,26 @@ export default class TrainingView extends React.Component {
     })
   }
 
-  onDragStart = (source, piece, position, orientation) => {
-    if (this.state.demoRunning) {
-      return false;
-    }
-    const isWhitePiece = piece.startsWith("w");
-    this.chess.load(this.state.currentPosition.fen);
-    let sideToMove = this.chess.turn() === "w" ? WHITE : BLACK;
-    console.log(sideToMove, isWhitePiece, this.state.playerColor, this.chess.turn(), piece)
-    if (sideToMove !== this.state.playerColor) {
-      return false;
-    }
-    if (isWhitePiece && sideToMove === BLACK) {
-      return false;
-    }
-    if (!isWhitePiece && sideToMove === WHITE) {
-      return false;
-    }
-  };
+  // onDragStart = (source, piece, position, orientation) => {
+  //   if (this.state.demoRunning) {
+  //     return false;
+  //   }
+  //   const isWhitePiece = piece.startsWith("w");
+  //   this.chess.load(this.state.currentPosition.fen);
+  //   let sideToMove = this.chess.turn() === "w" ? WHITE : BLACK;
+  //   console.log(sideToMove, isWhitePiece, this.state.playerColor, this.chess.turn(), piece)
+  //   if (sideToMove !== this.state.playerColor) {
+  //     return false;
+  //   }
+  //   if (isWhitePiece && sideToMove === BLACK) {
+  //     return false;
+  //   }
+  //   if (!isWhitePiece && sideToMove === WHITE) {
+  //     return false;
+  //   }
+  // };
 
-  onDrop = (source, target) => {
+  onMove = (source, target) => {
     const currentPosition = this.state.currentPosition;
     this.chess.load(currentPosition.fen);
     let move = this.chess.move({
@@ -278,30 +303,58 @@ export default class TrainingView extends React.Component {
       promotion: 'q' // NOTE: always promote to a queen for example simplicity
     });
     if (!move) {
-      return 'snapback';
+      console.error("Error illegal move")
     }
     if (!currentPosition.nextPosition) {
-      console.error("No next position")
-      return 'snapback';
+      console.error("Error no next position")
     }
     if (currentPosition.nextPosition.lastMove.san !== move.san) {
+      //WRONG MOVE
       this.flashBoard(false);
       this.setState({errorDuringLine: true})
-      return 'snapback';
+    } else {
+      //GOOD MOVE
+        this.setState({
+          currentPosition: currentPosition.nextPosition,
+        })
+        this.flashBoard(true);
+        this.addPositionToNotation(currentPosition.nextPosition)
+      this.gameLoop()
     }
-  };
-
-  onSnapEnd = () => {
-    const currentPosition = this.state.currentPosition;
-    if (currentPosition.nextPosition) {
-      this.setState({
-        currentPosition: currentPosition.nextPosition,
-      })
-      this.flashBoard(true);
-      this.addPositionToNotation(currentPosition.nextPosition)
-    }
-    this.gameLoop()
   }
+  // onDrop = (source, target) => {
+  //   const currentPosition = this.state.currentPosition;
+  //   this.chess.load(currentPosition.fen);
+  //   let move = this.chess.move({
+  //     from: source,
+  //     to: target,
+  //     promotion: 'q' // NOTE: always promote to a queen for example simplicity
+  //   });
+  //   if (!move) {
+  //     return 'snapback';
+  //   }
+  //   if (!currentPosition.nextPosition) {
+  //     console.error("No next position")
+  //     return 'snapback';
+  //   }
+  //   if (currentPosition.nextPosition.lastMove.san !== move.san) {
+  //     this.flashBoard(false);
+  //     this.setState({errorDuringLine: true})
+  //     return 'snapback';
+  //   }
+  // };
+  //
+  // onSnapEnd = () => {
+  //   const currentPosition = this.state.currentPosition;
+  //   if (currentPosition.nextPosition) {
+  //     this.setState({
+  //       currentPosition: currentPosition.nextPosition,
+  //     })
+  //     this.flashBoard(true);
+  //     this.addPositionToNotation(currentPosition.nextPosition)
+  //   }
+  //   this.gameLoop()
+  // }
 
   flashBoard = (goodMove) => {
     let className = goodMove ? "rightMove" : "wrongMove";
@@ -319,13 +372,22 @@ export default class TrainingView extends React.Component {
             <div className="columns">
               <div className="column">
                 <div>
-                  <ChessboardWrapper
+                  {/*<ChessboardWrapper*/}
+                  {/*  className={this.state.boardClass}*/}
+                  {/*  onDragStart={this.onDragStart}*/}
+                  {/*  onDrop={this.onDrop}*/}
+                  {/*  onSnapEnd={this.onSnapEnd}*/}
+                  {/*  position={this.state.currentPosition.fen}*/}
+                  {/*  orientation={this.state.playerColor === WHITE ? "white" : "black"}/>*/}
+                  <ChessgroundWrapper
                     className={this.state.boardClass}
-                    onDragStart={this.onDragStart}
-                    onDrop={this.onDrop}
-                    onSnapEnd={this.onSnapEnd}
+                    orientation={this.state.playerColor === WHITE ? "white" : "black"}
+                    movableColor={this.state.playerColor === WHITE ? "white" : "black"}
+                    onMove={this.onMove}
+                    legalMoves={this.state.legalMoves}
+                    viewOnly={this.state.demoRunning}
                     position={this.state.currentPosition.fen}
-                    orientation={this.state.playerColor === WHITE ? "white" : "black"}/>
+                  />
                 </div>
               </div>
               <div className="column notation-column">
