@@ -1,3 +1,5 @@
+@import '../variables';
+
 .rightMove {
   animation-name: rightMoveFlash;
   animation-duration: 1s;
@@ -25,5 +27,51 @@
   }
   100% {
     box-shadow: none;
+  }
+}
+
+.training-view{
+  display: flex;
+  height: 100%;
+}
+
+.training-view:focus {
+  outline: none;
+}
+
+.notation-column {
+  flex: 1 1 auto;
+  max-height: $widescreen-game-height;
+}
+
+.game-column {
+  flex: 0 1 80vh;
+}
+
+@media screen and (max-width: 850px){
+  .training-view {
+    flex-direction: column;
+  }
+  .game-column {
+    max-width: $widescreen-game-height;
+    flex: 1 1 auto;
+  }
+}
+
+@media screen and (min-width: 850px){
+  .training-view {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .notation-column {
+    max-width: calc(100% - #{$widescreen-game-height} - 3%);
+    min-width: calc(100% - #{$widescreen-game-height} - 3%);
+  }
+}
+
+@media screen and (max-width: 1024px){
+  .container {
+    max-width: 95%;
   }
 }

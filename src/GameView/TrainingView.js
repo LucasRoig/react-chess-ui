@@ -2,7 +2,6 @@ import React from "react"
 import GameService from "./GameService";
 import TrainingFactory from "./TrainingFactory";
 import {BLACK, WHITE} from "../models/Constants";
-import ChessboardWrapper from "./ChessBoard/ChessboardWrapper/ChessboardWrapper";
 import NotationView from "./NotationView/NotationView";
 import Chess from "chess.js";
 import Game from "../models/Game";
@@ -275,25 +274,6 @@ export default class TrainingView extends React.Component {
     })
   }
 
-  // onDragStart = (source, piece, position, orientation) => {
-  //   if (this.state.demoRunning) {
-  //     return false;
-  //   }
-  //   const isWhitePiece = piece.startsWith("w");
-  //   this.chess.load(this.state.currentPosition.fen);
-  //   let sideToMove = this.chess.turn() === "w" ? WHITE : BLACK;
-  //   console.log(sideToMove, isWhitePiece, this.state.playerColor, this.chess.turn(), piece)
-  //   if (sideToMove !== this.state.playerColor) {
-  //     return false;
-  //   }
-  //   if (isWhitePiece && sideToMove === BLACK) {
-  //     return false;
-  //   }
-  //   if (!isWhitePiece && sideToMove === WHITE) {
-  //     return false;
-  //   }
-  // };
-
   onMove = (source, target) => {
     const currentPosition = this.state.currentPosition;
     this.chess.load(currentPosition.fen);
@@ -322,39 +302,6 @@ export default class TrainingView extends React.Component {
       this.gameLoop()
     }
   }
-  // onDrop = (source, target) => {
-  //   const currentPosition = this.state.currentPosition;
-  //   this.chess.load(currentPosition.fen);
-  //   let move = this.chess.move({
-  //     from: source,
-  //     to: target,
-  //     promotion: 'q' // NOTE: always promote to a queen for example simplicity
-  //   });
-  //   if (!move) {
-  //     return 'snapback';
-  //   }
-  //   if (!currentPosition.nextPosition) {
-  //     console.error("No next position")
-  //     return 'snapback';
-  //   }
-  //   if (currentPosition.nextPosition.lastMove.san !== move.san) {
-  //     this.flashBoard(false);
-  //     this.setState({errorDuringLine: true})
-  //     return 'snapback';
-  //   }
-  // };
-  //
-  // onSnapEnd = () => {
-  //   const currentPosition = this.state.currentPosition;
-  //   if (currentPosition.nextPosition) {
-  //     this.setState({
-  //       currentPosition: currentPosition.nextPosition,
-  //     })
-  //     this.flashBoard(true);
-  //     this.addPositionToNotation(currentPosition.nextPosition)
-  //   }
-  //   this.gameLoop()
-  // }
 
   flashBoard = (goodMove) => {
     let className = goodMove ? "rightMove" : "wrongMove";
@@ -366,42 +313,31 @@ export default class TrainingView extends React.Component {
 
   render() {
     return (
-      <>
-        {this.state.currentPosition ?
-          <div className="container" onKeyDown={this.onKeyDown} tabIndex="0">
-            <div className="columns">
-              <div className="column">
-                <div>
-                  {/*<ChessboardWrapper*/}
-                  {/*  className={this.state.boardClass}*/}
-                  {/*  onDragStart={this.onDragStart}*/}
-                  {/*  onDrop={this.onDrop}*/}
-                  {/*  onSnapEnd={this.onSnapEnd}*/}
-                  {/*  position={this.state.currentPosition.fen}*/}
-                  {/*  orientation={this.state.playerColor === WHITE ? "white" : "black"}/>*/}
+        <>
+          {this.state.currentPosition ?
+              <div className="training-view" onKeyDown={this.onKeyDown}>
+                <div className="game-column">
                   <ChessgroundWrapper
-                    className={this.state.boardClass}
-                    orientation={this.state.playerColor === WHITE ? "white" : "black"}
-                    movableColor={this.state.playerColor === WHITE ? "white" : "black"}
-                    onMove={this.onMove}
-                    legalMoves={this.state.legalMoves}
-                    viewOnly={this.state.demoRunning}
-                    position={this.state.currentPosition.fen}
+                      className={this.state.boardClass}
+                      orientation={this.state.playerColor === WHITE ? "white" : "black"}
+                      movableColor={this.state.playerColor === WHITE ? "white" : "black"}
+                      onMove={this.onMove}
+                      legalMoves={this.state.legalMoves}
+                      viewOnly={this.state.demoRunning}
+                      position={this.state.currentPosition.fen}
                   />
                 </div>
+                <div className="notation-column">
+                  <div>Ligne {this.state.currentLineIndex} / {this.state.totalLineCount}</div>
+                  <NotationView game={this.state.game}
+                                handleClick={this.setPosition}
+                                currentPosition={this.state.currentPosition}
+                                makeMove={this.makeMove}
+                                onContextualAction={this.handleContextualActionOnNotation}/>
+                </div>
               </div>
-              <div className="column notation-column">
-                <div>Ligne {this.state.currentLineIndex} / {this.state.totalLineCount}</div>
-                <NotationView game={this.state.game}
-                              handleClick={this.setPosition}
-                              currentPosition={this.state.currentPosition}
-                              makeMove={this.makeMove}
-                              onContextualAction={this.handleContextualActionOnNotation}/>
-              </div>
-            </div>
-          </div>
-          : <div>loading</div>}
-      </>
+              : <div>loading</div>}
+        </>
     )
   }
 }

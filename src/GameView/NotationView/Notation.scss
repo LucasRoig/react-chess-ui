@@ -20,7 +20,8 @@
 @media screen  and (max-width: 850px){
     .game-details-panel{
         //100vh - navbarHeight - boardHeight - previousNextCommentButtonsHeight
-        height: calc(100vh - 3.25rem - 100vw - 40px);
+        //height: calc(100vh - 3.25rem - 100vw - 40px);
+        height: 250px;
     }
 }
 
@@ -45,6 +46,7 @@
 
     margin-bottom: 0 !important;
 }
+
 .notation>.move-number{
     flex: 0 0 13%;
     text-align: center;
