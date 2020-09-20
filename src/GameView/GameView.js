@@ -1,7 +1,5 @@
 import {Component} from "react";
-import ChessboardWrapper from "./ChessBoard/ChessboardWrapper/ChessboardWrapper";
 
-// import MoveList from "./MoveList/MoveList";
 import NotationView from "./NotationView/NotationView";
 import React from "react";
 import Position from "../models/Position";
@@ -13,9 +11,6 @@ import ChessgroundWrapper from "./ChessBoard/ChessgroundWrapper";
 
 export default class GameView extends Component {
   chess = new Chess();
-  style = {
-    width: "5500px"
-  };
 
   constructor(props) {
     super(props);
@@ -23,15 +18,53 @@ export default class GameView extends Component {
     if (gameId) {
       this.state = {
         currentPosition: null,
-        game: null
+        game: null,
+        legalMoves : {}
       }
     } else {
       let game = new Game();
       this.state = {
         game,
-        currentPosition: this.game.startingPosition
+        currentPosition: this.game.startingPosition,
+        legalMoves : {}
       }
     }
+    this.calcLegalMoves();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+      if (this.state.currentPosition !== prevState.currentPosition) {
+        this.calcLegalMoves();
+      }
+  }
+  componentDidMount() {
+    let gameId = this.props.match.params.id;
+    if (gameId) {
+      GameService.fetchGame(gameId).then(game => {
+        this.setState({
+          game,
+          currentPosition: game.startingPosition
+        })
+      })
+    } else {
+      this.calcLegalMoves();
+    }
+  }
+
+  calcLegalMoves() {
+    if (! (this.state.currentPosition && this.state.currentPosition.fen)) {
+      return;
+    }
+    const legalMoves = {get : d => legalMoves[d]};
+    let chess = new Chess();
+    chess.load(this.state.currentPosition.fen);
+    chess.SQUARES.forEach(square => {
+      const ms = chess.moves({square, verbose: true})
+      if (ms.length > 0) {
+        legalMoves[square] = ms.map(move => move.to)
+      }
+    })
+    this.setState({legalMoves})
   }
 
   render = () => {
@@ -43,9 +76,8 @@ export default class GameView extends Component {
               <div className="game-column">
                 <div onWheel={this.onWheel}>
                   <ChessgroundWrapper
-                    onDragStart={this.onDragStart}
-                    onDrop={this.onDrop}
-                    onSnapEnd={this.onSnapEnd}
+                    onMove={this.onMove}
+                    legalMoves={this.state.legalMoves}
                     position={this.state.currentPosition.fen}/>
                 </div>
                 <button onClick={this.previousPosition}>Previous</button>
@@ -57,10 +89,8 @@ export default class GameView extends Component {
                 <NotationView game={this.state.game}
                               handleClick={this.setPosition}
                               currentPosition={this.state.currentPosition}
-                              makeMove={this.makeMove}
+                              makeMove={this.makeMove} //TODO FIX la methode n'existe plus
                               onContextualAction={this.handleContextualActionOnNotation}/>
-                {/* <MoveList game={this.game} handleClick={this.setPosition}
-                                  currentPosition={this.state.currentPosition}/> */}
               </div>
             </div>
           : <div>loading</div>}
@@ -71,11 +101,8 @@ export default class GameView extends Component {
   onWheel = (e) => {
     if (e.deltaY < 0) {
       this.previousPosition();
-      return;
-    }
-    if (e.deltaY > 0) {
+    }else if (e.deltaY > 0) {
       this.nextPosition();
-      return;
     }
   };
 
@@ -152,16 +179,6 @@ export default class GameView extends Component {
     }
   };
 
-  onDragStart = (source, piece, position, orientation) => {
-    this.chess.load(this.state.currentPosition.fen);
-    if (this.chess.game_over() === true ||
-      (this.chess.turn() === 'w' && piece.search(/^b/) !== -1) ||
-      (this.chess.turn() === 'b' && piece.search(/^w/) !== -1)) {
-
-      return false;
-    }
-  };
-
   isMoveLegal = (source, target) => {
     // console.log('drop')
     // see if the move is legal
@@ -176,25 +193,14 @@ export default class GameView extends Component {
     // illegal move
   };
 
-  onDrop = (source, target) => {
-    if (!this.isMoveLegal(source, target)) {
-      return 'snapback';
-    }
-  };
-
-  //used to avoid the other parameters of onSnapEnd from the board
-  onSnapEnd = (source, target) => {
-    this.makeMove(source, target)
-  };
-
-  makeMove = (source, target, promotion) => {
+  onMove = (source, target) => {
     //TODO optimiser un jour?
     if (this.isMoveLegal(source, target)) {
       this.chess.load(this.state.currentPosition.fen);
       let move = this.chess.move({
         from: source,
         to: target,
-        promotion: promotion || 'q' // NOTE: always promote to a queen for example simplicity
+        promotion: 'q' //TODO NOTE: always promote to a queen for example simplicity
       });
       let fen = this.chess.fen();
       if (this.state.currentPosition.nextPosition && this.state.currentPosition.nextPosition.fen === fen) {
@@ -258,18 +264,4 @@ export default class GameView extends Component {
     }
     console.log(e, data, target);
   };
-
-  componentDidMount() {
-    let gameId = this.props.match.params.id;
-    if (gameId) {
-      GameService.fetchGame(gameId).then(game => {
-        this.setState({
-          game,
-          currentPosition: game.startingPosition
-        })
-      })
-    }
-    // let stockfish = require("stockfish");
-    // let engine = stockfish();
-  }
 }
