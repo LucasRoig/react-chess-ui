@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-const baseUrl = "http://localhost:8080/api/v1";
+const baseUrl = window.location.hostname === "localhost" ? "http://localhost:8080/api/v1" : "/api/v1";
 let token = null;
 
 const getWithAuth = url => Axios.get(baseUrl + url, {

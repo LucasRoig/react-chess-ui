@@ -227,8 +227,10 @@ export default class TrainingView extends React.Component {
         errorDuringLine: false
       }, async () => {
         if (this.state.showDemo) {
-          await this.showDemo(line)
-          this.setState({currentPosition: line[0], game: new Game()}, this.gameLoop)
+          this.setState({demoRunning: true}, async () => {
+            await this.showDemo(line)
+            this.setState({currentPosition: line[0], game: new Game(), demoRunning:false}, this.gameLoop)
+          })
         } else {
           this.gameLoop()
         }
@@ -288,8 +290,11 @@ export default class TrainingView extends React.Component {
     if (!currentPosition.nextPosition) {
       console.error("Error no next position")
     }
-    if (currentPosition.nextPosition.lastMove.san !== move.san) {
+    this.chess.load(currentPosition.fen);
+    let wantedMove = this.chess.move(currentPosition.nextPosition.lastMove.san, {sloppy: true});
+    if (wantedMove.san !== move.san) {
       //WRONG MOVE
+      console.log("expected move : " + currentPosition.nextPosition.lastMove.san, "user move : " + move.san);
       this.flashBoard(false);
       this.setState({errorDuringLine: true})
     } else {
@@ -311,6 +316,13 @@ export default class TrainingView extends React.Component {
     setTimeout(() => this.setState({boardClass: ""}), 500)
   }
 
+  showMove = () => {
+    if (this.state.currentPosition.nextPosition && !this.state.demoRunning){
+      alert(this.state.currentPosition.nextPosition.lastMove.san)
+      this.setState({errorDuringLine: true})
+    }
+  }
+
   render() {
     return (
         <>
@@ -326,6 +338,7 @@ export default class TrainingView extends React.Component {
                       viewOnly={this.state.demoRunning}
                       position={this.state.currentPosition.fen}
                   />
+                  <button className={"button"} onClick={this.showMove}>Show Move</button>
                 </div>
                 <div className="notation-column">
                   <div>Ligne {this.state.currentLineIndex} / {this.state.totalLineCount}</div>
