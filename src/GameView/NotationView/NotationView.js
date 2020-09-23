@@ -19,7 +19,7 @@ export default class NotationView extends Component {
                 <div className="card-content notation-wrapper">
                     {notationModel.render()}
                 </div>
-                <Toolbar currentPosition={this.props.currentPosition} makeMove={this.props.makeMove}/>
+                <Toolbar currentPosition={this.props.currentPosition} makeMove={this.props.makeMove} game={this.props.game}/>
             </div>
         )
     }

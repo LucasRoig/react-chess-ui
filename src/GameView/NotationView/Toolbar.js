@@ -4,6 +4,7 @@ import "./Toolbar.scss"
 import BookTool from "./Tools/BookTool";
 import EngineTool from "./Tools/EngineTool"
 import ScrollManager from "./ScrollManager";
+import StatsTool from "./Tools/StatsTool";
 
 const TOOL_NONE = {
     name: "None"
@@ -15,7 +16,9 @@ const TOOL_BOOK = {
 const TOOL_ENGINE = {
     name: "Engine"
 };
-
+const TOOL_STATS = {
+    name: "Stats"
+}
 
 
 export default class Toolbar extends Component {
@@ -37,9 +40,15 @@ export default class Toolbar extends Component {
                     <EngineTool currentPosition={this.props.currentPosition} makeMove={this.props.makeMove}/>
                 </div>
                 }
+                {this.state.selectedTool === TOOL_STATS &&
+                    <div className="tool">
+                        <StatsTool game={this.props.game}/>
+                    </div>
+                }
                 <div className="tool-buttons">
                     <a className="card-footer-item" hrefLang="#" onClick={() => this.selectTool(TOOL_BOOK)}>Book</a>
                     <a className="card-footer-item" hrefLang="#" onClick={() => this.selectTool(TOOL_ENGINE)}>Stockfish</a>
+                    <a className="card-footer-item" hrefLang="#" onClick={() => this.selectTool(TOOL_STATS)}>Stats</a>
                 </div>
             </footer>
         )
