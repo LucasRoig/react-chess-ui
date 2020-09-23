@@ -56,7 +56,12 @@ class DatabaseDetails extends Component {
   uploadPgn = () => {
     const selectedPgn = this.state.selectedPgn;
     if (selectedPgn) {
-      DatabaseService.importPgn(this.state.database.id, selectedPgn);
+      DatabaseService.importPgn(this.state.database.id, selectedPgn).then(g => {
+        let db = this.state.database;
+        this.setState({
+          database: DbDetails.update(db, {gameHeaders: {$push: [g]}})
+        })
+      });
     }
   }
 

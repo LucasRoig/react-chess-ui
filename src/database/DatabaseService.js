@@ -92,7 +92,7 @@ const importPgn = (databaseId, file) => {
     if (res.status !== 200 && res.status !== 201) {
       throw res;
     } else {
-      return res.data;
+      return GameHeader(...res.data);
     }
   });
 }
