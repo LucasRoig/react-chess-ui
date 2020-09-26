@@ -115,7 +115,20 @@ const saveGame = (game) => {
   })
 }
 
+const deleteGame = game => {
+  return ApiService.delete("/game/" + game.id).then(res => {
+    if (res.status !== 200) {
+      throw res;
+    }
+    return true;
+  }).catch(e => {
+    console.error(e);
+    //TODO
+  })
+}
+
 export default {
   fetchGame,
-  saveGame
+  saveGame,
+  deleteGame
 }

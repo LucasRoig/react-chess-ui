@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import './DatabaseList.scss';
 import DatabaseService from "./DatabaseService";
 import {DbDetails} from "./DbDetails";
+import GameService from "../GameView/GameService";
+import {showConfirmationModal} from "../components/modal/ConfirmationModal";
 
 const GameDetails = (props) => {
   function handleTraining(e) {
@@ -9,6 +11,7 @@ const GameDetails = (props) => {
     props.history.push("/training/" + props.game.id);
   }
   function handleDelete(e) {
+    props.onDelete(props.game);
     e.stopPropagation();
   }
   return (
@@ -47,6 +50,30 @@ class DatabaseDetails extends Component {
         database: DbDetails.update(db, {gameHeaders: {$push: [game]}})
       })
     });
+  }
+
+  deleteGame = (game) => {
+    let properties = {
+      title: "Suppression de la partie " + game.whiteName + " - " + game.blackName,
+      message: "Êtes vous sûr de vouloir supprimer la partie " + game.whiteName + " - " + game.blackName,
+      confirmButtonText: "Supprimer",
+      confirmButtonClass: "is-danger",
+      onConfirm: () => {
+        GameService.deleteGame(game).then(res => {
+          if (res) {
+            let db = this.state.database;
+            let i = db.gameHeaders.indexOf(game);
+            if (i >= 0) {
+              this.setState({
+                database: DbDetails.update(db, {gameHeaders: {$splice: [[i,1]]}})
+              })
+            }
+          }
+        })
+      }
+    }
+    showConfirmationModal(properties)
+
   }
 
   onFileChanged = (e) => {
@@ -90,7 +117,9 @@ class DatabaseDetails extends Component {
               <tbody>
               {this.state.database.gameHeaders.map(game =>
                 <GameDetails key={game.id} game={game}
-                             onClick={() => this.props.history.push("/game/" + game.id)} history={this.props.history}/>)
+                             onClick={() => this.props.history.push("/game/" + game.id)}
+                             onDelete={this.deleteGame}
+                             history={this.props.history}/>)
               }
               </tbody>
             </table>
