@@ -241,7 +241,7 @@ export class NotationModel {
                 }
                 this.notation.push(new NotationInterrupt(position.comment, position.previousPosition.sublines, onMoveClicked, currentPosition, onContextualAction));
                 if (isWhite) {
-                    this.notation.push(new NotationIndex(position.lastMove.san));
+                    this.notation.push(new NotationIndex(position.moveNumber));
                     this.notation.push(new NotationEmptyMove());
                 }
             }
